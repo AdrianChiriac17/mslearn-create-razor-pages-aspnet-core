@@ -7,19 +7,16 @@ namespace ContosoPizza.Services
     {
         private readonly PizzaContext _context = default!;
 
-        public PizzaService(PizzaContext context) 
+        public PizzaService(PizzaContext context)
         {
             _context = context;
         }
-        
+
         public IList<Pizza> GetPizzas()
         {
-            if(_context.Pizzas != null)
-            {
-                return _context.Pizzas.ToList();
-            }
-            return new List<Pizza>();
+            return _context.Pizzas?.ToList() ?? new List<Pizza>();
         }
+
 
         public void AddPizza(Pizza pizza)
         {
@@ -40,7 +37,7 @@ namespace ContosoPizza.Services
                     _context.Pizzas.Remove(pizza);
                     _context.SaveChanges();
                 }
-            }            
-        } 
+            }
+        }
     }
 }
