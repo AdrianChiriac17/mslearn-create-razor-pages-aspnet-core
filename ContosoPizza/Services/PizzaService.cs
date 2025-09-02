@@ -6,10 +6,12 @@ namespace ContosoPizza.Services
     public class PizzaService
     {
         private readonly PizzaContext _context = default!;
+        private readonly ILogger<PizzaService> _logger;
 
-        public PizzaService(PizzaContext context)
+        public PizzaService(PizzaContext context, ILogger<PizzaService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public IList<Pizza> GetPizzas()
@@ -23,6 +25,7 @@ namespace ContosoPizza.Services
             if (_context.Pizzas != null)
             {
                 _context.Pizzas.Add(pizza);
+                _logger.LogInformation("Added new pizza: {PizzaName}", pizza.Name);
                 _context.SaveChanges();
             }
         }
@@ -35,7 +38,9 @@ namespace ContosoPizza.Services
                 if (pizza != null)
                 {
                     _context.Pizzas.Remove(pizza);
+                    _logger.LogInformation("Deleted pizza with ID: {PizzaId}", id);
                     _context.SaveChanges();
+                    
                 }
             }
         }

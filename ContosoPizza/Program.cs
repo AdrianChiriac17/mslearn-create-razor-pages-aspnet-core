@@ -7,11 +7,30 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<PizzaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PizzaContext")));
 
+
+if (builder.Environment.ToString() == "Local")
+{
+    //pt sqlite
+    builder.Services.AddDbContext<PizzaContext>(options =>
+       options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+else
+{
+    //suntem pe development/production
+    builder.Services.AddDbContext<PizzaContext>(options =>
+       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 builder.Services.AddScoped<PizzaService>();
+
+// Add Application Insights
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    options.ConnectionString = builder.Configuration.GetConnectionString("ApplicationInsights")
+                             ?? builder.Configuration["ApplicationInsights:ConnectionString"];
+});
+
 
 var app = builder.Build();
 
